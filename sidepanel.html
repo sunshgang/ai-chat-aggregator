@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>AI Chat 聚合窗口</title>
+  <link rel="stylesheet" href="sidepanel.css">
+</head>
+<body>
+  <!-- 顶部栏 -->
+  <header id="topbar">
+    <div class="brand">
+      <svg class="logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+      </svg>
+      <select id="chatSelect" class="select" title="选择 AI Chat"></select>
+    </div>
+    <div class="actions">
+      <button id="btnRefresh" class="icon-btn" title="刷新" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 4 23 10 17 10"/>
+          <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+        </svg>
+      </button>
+      <button id="btnOpenTab" class="icon-btn" title="完整窗口打开" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+          <polyline points="15 3 21 3 21 9"/>
+          <line x1="10" y1="14" x2="21" y2="3"/>
+        </svg>
+      </button>
+      <button id="btnSettings" class="icon-btn" title="设置">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- 内容区：AI Chat 页面 -->
+  <main id="chatView">
+    <iframe id="chatFrame" title="AI Chat" allow="clipboard-read; clipboard-write; microphone; camera; fullscreen"></iframe>
+    <div id="loadingWrap"><div class="spinner"></div></div>
+    <div id="emptyState" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+      </svg>
+      <p>暂无可显示的 AI Chat</p>
+      <button id="btnGoSettings" class="btn ghost">前往设置开启</button>
+    </div>
+  </main>
+
+  <!-- 设置页 -->
+  <section id="settingsView" hidden>
+    <div class="settings-header">
+      <button id="btnBack" class="icon-btn" title="返回">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"/>
+          <polyline points="12 19 5 12 12 5"/>
+        </svg>
+      </button>
+      <h2>设置</h2>
+    </div>
+    <div class="settings-body">
+      <div class="card">
+        <div class="label">默认打开的 AI Chat</div>
+        <select id="defaultSelect" class="select"></select>
+      </div>
+
+      <div class="card">
+        <div class="label">AI Chat 列表<span class="spacer"></span><button id="btnRestore" class="link-btn">恢复默认列表</button></div>
+        <ul id="chatList"></ul>
+      </div>
+
+      <div class="card">
+        <div class="label">添加 AI Chat</div>
+        <div class="add-form">
+          <input id="newName" class="input" type="text" placeholder="名称，如：Kimi">
+          <input id="newUrl" class="input" type="text" placeholder="网址，如：https://kimi.moonshot.cn">
+          <div class="ua-field">
+            <input id="newUa" class="input" type="text" placeholder="自定义请求头 User-Agent（可选）">
+            <button id="btnFillUa" class="icon-btn" type="button" title="自动填入 Chrome 移动版请求头">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+                <line x1="12" y1="18" x2="12.01" y2="18"/>
+              </svg>
+            </button>
+          </div>
+          <button id="btnAdd" class="btn">添加</button>
+        </div>
+      </div>
+
+      <p class="hint">开关控制该 AI Chat 是否显示在顶部切换列表中。自定义 User-Agent 常用于改用移动版页面以获得更好的内嵌效果（点手机图标可一键填入）。部分网站因安全策略可能限制内嵌显示（如登录跳转），可点右上角「完整窗口打开」在新标签页使用。</p>
+    </div>
+  </section>
+
+  <script src="defaults.js"></script>
+  <script src="sidepanel.js"></script>
+</body>
+</html>
